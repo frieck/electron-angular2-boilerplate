@@ -25,7 +25,8 @@ var paths = {
         './node_modules/**',
         './helpers/**',
         './**/*.html',
-        './**/*.+(jpg|png|svg)'
+        './**/*.+(jpg|png|svg)',
+        '!./**/*.ts',
     ],
 };
 
@@ -79,7 +80,7 @@ var typescriptTask = function () {
     .pipe(ts(tsProject))
         .on('error', errorHandler('TypeScript'))
     .pipe(gulp.dest(function() {
-        return destDir.path('app/');
+        return destDir.path();
     }));
 };
 gulp.task('typescript', ['clean'], typescriptTask);
