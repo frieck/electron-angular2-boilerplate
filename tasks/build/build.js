@@ -31,61 +31,61 @@ var paths = {
 };
 
 var errorHandler = function(title) {
-  return function(err) {
-    gutil.log(gutil.colors.red('[' + title + ']'), err.toString());
-    this.emit('end');
-  };
+    return function(err) {
+        gutil.log(gutil.colors.red('[' + title + ']'), err.toString());
+        this.emit('end');
+    };
 };
 
 // -------------------------------------
 // Tasks
 // -------------------------------------
 
-gulp.task('clean', function () {
-    return destDir.dirAsync('.', { empty: true });
+gulp.task('clean', function() {
+    return destDir.dirAsync('.', {
+        empty: true
+    });
 });
 
 
-var copyTask = function () {
+var copyTask = function() {
     return projectDir.copyAsync('app', destDir.path(), {
-            overwrite: true,
-            matching: paths.copyFromAppDir
-        });
+        overwrite: true,
+        matching: paths.copyFromAppDir
+    });
 };
 gulp.task('copy', ['clean'], copyTask);
 gulp.task('copy-watch', copyTask);
 
 
-var bundleApplication = function () {
+var bundleApplication = function() {
     return Q.all([
-            bundle(srcDir.path('background.js'), destDir.path('background.js')),
-            bundle(srcDir.path('app.js'), destDir.path('app.js')),
-        ]);
+        bundle(srcDir.path('background.js'), destDir.path('background.js')),
+        bundle(srcDir.path('app.js'), destDir.path('app.js')),
+    ]);
 };
 
-var bundleSpecs = function () {
-    return generateSpecImportsFile().then(function (specEntryPointPath) {
+var bundleSpecs = function() {
+    return generateSpecImportsFile().then(function(specEntryPointPath) {
         return bundle(specEntryPointPath, destDir.path('spec.js'));
     });
 };
 
-var typescriptTask = function () {
-    
-    var tsProject = ts.createProject({
-        target: 'es6',
-        sortOutput: true
-    });
-    
-    return gulp.src(['app/**/*.ts', "!app/node_modules", "!app/node_modules/**"])
-    .pipe(ts(tsProject))
+var typescriptTask = function() {
+
+    console.log(projectDir.path("tsconfig.json"));
+    var tsProject = ts.createProject(projectDir.path("tsconfig.json"));
+
+    return gulp.src(['app/**/*.ts', 'app/*.ts', "!app/node_modules", "!app/node_modules/**"])
+        .pipe(ts(tsProject))
         .on('error', errorHandler('TypeScript'))
-    .pipe(gulp.dest(function() {
-        return destDir.path();
-    }));
+        .pipe(gulp.dest(function() {
+            return destDir.path();
+        }));
 };
 gulp.task('typescript', ['clean'], typescriptTask);
 
-var bundleTask = function () {
+var bundleTask = function() {
     if (utils.getEnvName() === 'test') {
         return bundleSpecs();
     }
@@ -95,7 +95,7 @@ gulp.task('bundle', ['clean'], bundleTask);
 gulp.task('bundle-watch', bundleTask);
 
 
-var lessTask = function () {
+var lessTask = function() {
     return gulp.src('app/stylesheets/main.less')
         .pipe(plumber())
         .pipe(less())
@@ -105,13 +105,13 @@ gulp.task('less', ['clean'], lessTask);
 gulp.task('less-watch', lessTask);
 
 
-gulp.task('environment', ['clean'], function () {
+gulp.task('environment', ['clean'], function() {
     var configFile = 'config/env_' + utils.getEnvName() + '.json';
     projectDir.copy(configFile, destDir.path('env.json'));
 });
 
 
-gulp.task('package-json', ['clean'], function () {
+gulp.task('package-json', ['clean'], function() {
     var manifest = srcDir.read('package.json', 'json');
 
     // Add "dev" suffix to name, so Electron will write all data like cookies
@@ -125,14 +125,16 @@ gulp.task('package-json', ['clean'], function () {
 });
 
 
-gulp.task('watch', function () {
-    watch('app/**/*.js', batch(function (events, done) {
+gulp.task('watch', function() {
+    watch('app/**/*.js', batch(function(events, done) {
         gulp.start('bundle-watch', done);
     }));
-    watch(paths.copyFromAppDir, { cwd: 'app' }, batch(function (events, done) {
+    watch(paths.copyFromAppDir, {
+        cwd: 'app'
+    }, batch(function(events, done) {
         gulp.start('copy-watch', done);
     }));
-    watch('app/**/*.less', batch(function (events, done) {
+    watch('app/**/*.less', batch(function(events, done) {
         gulp.start('less-watch', done);
     }));
 });
