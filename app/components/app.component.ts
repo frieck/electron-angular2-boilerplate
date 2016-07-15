@@ -2,8 +2,19 @@
 
 
 import { Component } from '@angular/core';
+
+interface Greeting {
+  text: string;
+  name?: string;
+}
+
 @Component({
   selector: 'my-app',
-  template: '<h1>My First Angular 2 App</h1>'
+  templateUrl: "templates/greeting.html"
 })
-export class AppComponent { }
+
+export class AppComponent {
+  greet: Greeting = {
+    text: "Welcome, "
+  };
+}

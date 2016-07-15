@@ -24,6 +24,7 @@ var paths = {
     copyFromAppDir: [
         './node_modules/**',
         './helpers/**',
+        './templates/**',
         './**/*.html',
         './**/*.+(jpg|png|svg)',
         '!./**/*.ts',
@@ -73,8 +74,6 @@ var bundleSpecs = function() {
 };
 
 var typescriptTask = function() {
-
-    console.log(projectDir.path("tsconfig.json"));
     var tsProject = ts.createProject(projectDir.path("tsconfig.json"));
 
     return gulp.src(['app/**/*.ts', 'app/*.ts', "!app/node_modules", "!app/node_modules/**"])
