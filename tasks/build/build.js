@@ -49,6 +49,7 @@ gulp.task('clean', function() {
 
 
 var copyTask = function() {
+    projectDir.copy('app/systemjs.config.js', destDir.path('systemjs.config.js'));
     return projectDir.copyAsync('app', destDir.path(), {
         overwrite: true,
         matching: paths.copyFromAppDir
@@ -60,8 +61,8 @@ gulp.task('copy-watch', copyTask);
 
 var bundleApplication = function() {
     return Q.all([
-        bundle(srcDir.path('background.js'), destDir.path('background.js')),
-        bundle(srcDir.path('app.js'), destDir.path('app.js')),
+        bundle(destDir.path('background.js'), destDir.path('background.js')),
+        bundle(destDir.path('app.js'), destDir.path('app.js')),
     ]);
 };
 
@@ -91,7 +92,7 @@ var bundleTask = function() {
     }
     return bundleApplication();
 };
-gulp.task('bundle', ['clean'], bundleTask);
+gulp.task('bundle', ['clean', "typescript"], bundleTask);
 gulp.task('bundle-watch', bundleTask);
 
 

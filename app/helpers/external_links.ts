@@ -18,11 +18,11 @@
 
     var shell = require('electron').shell;
 
-    var supportExternalLinks = function (e) {
-        var href;
+    var supportExternalLinks = function (e :Event) {
+        var href :string;
         var isExternal = false;
 
-        var checkDomElement = function (element) {
+        var checkDomElement = function (element :any) {
             if (element.nodeName === 'A') {
                 href = element.getAttribute('href');
             }

@@ -1,27 +1,28 @@
-<!doctype html>
 <html>
+
 <head>
-    <meta charset="utf-8">
-    <title>Electron Boilerplate</title>
-
-    <link href="stylesheets/main.css" rel="stylesheet" type="text/css">
-
-    <script src="helpers/context_menu.js"></script>
-    <script src="helpers/external_links.js"></script>
-
-    <script src="app.js"></script>
+    <title>Angular 2 QuickStart</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="stylesheets/main.css">
+    <!-- 1. Load libraries -->
+    <!-- Polyfill(s) for older browsers -->
+    <script src="node_modules/core-js/client/shim.min.js"></script>
+    <script src="node_modules/zone.js/dist/zone.js"></script>
+    <script src="node_modules/reflect-metadata/Reflect.js"></script>
+    <script src="node_modules/systemjs/dist/system.src.js"></script>
+    <!-- 2. Configure SystemJS -->
+    <script src="systemjs.config.js"></script>
+    <script>
+        System.import('main').catch(function(err) {
+            console.error(err);
+        });
+    </script>
 </head>
+<!-- 3. Display the application -->
+
 <body>
-
-    <div class="container">
-        <h1 id="greet"></h1>
-        <p class="subtitle">
-            Welcome to <a href="http://electron.atom.io" class="js-external-link">Electron</a> app running on this magnificent <strong id="platform-info"></strong> machine.
-        </p>
-        <p class="subtitle">
-            You are in <strong id="env-name"></strong> environment.
-        </p>
-    </div>
-
+    <my-app>Loading...</my-app>
 </body>
+
 </html>

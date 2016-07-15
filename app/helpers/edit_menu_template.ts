@@ -1,7 +1,7 @@
-export var editMenuTemplate = {
+export var editMenuTemplate :any = {
     label: 'Edit',
     submenu: [
-        { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
+        { label: "Undo", accelerator: "CmdOrCtrl+Z", role: "undo:" },
         { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
         { type: "separator" },
         { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },

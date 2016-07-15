@@ -4,9 +4,16 @@
 // instances of it and give each different name.
 
 import { app, BrowserWindow, screen } from 'electron';
-import jetpack from 'fs-jetpack';
+var jetpack = require('fs-jetpack');
 
-export default function (name, options) {
+interface WindowsState {
+    width: number;
+    height: number;
+    x?: number;
+    y?: number;
+}
+
+export default function (name : string, options : WindowsState) :Electron.BrowserWindow{
 
     var userDataDir = jetpack.cwd(app.getPath('userData'));
     var stateStoreFile = 'window-state-' + name +'.json';
@@ -15,10 +22,10 @@ export default function (name, options) {
         height: options.height
     };
     var state = {};
-    var win;
+    var win : Electron.BrowserWindow;
 
-    var restore = function () {
-        var restoredState = {};
+    var restore = function () : WindowsState {
+        var restoredState :WindowsState;
         try {
             restoredState = userDataDir.read(stateStoreFile, 'json');
         } catch (err) {
@@ -39,14 +46,14 @@ export default function (name, options) {
         };
     };
 
-    var windowWithinBounds = function (windowState, bounds) {
+    var windowWithinBounds = function (windowState :WindowsState, bounds :WindowsState) {
         return windowState.x >= bounds.x &&
             windowState.y >= bounds.y &&
             windowState.x + windowState.width <= bounds.x + bounds.width &&
             windowState.y + windowState.height <= bounds.y + bounds.height;
     };
 
-    var resetToDefaults = function (windowState) {
+    var resetToDefaults = function (windowState :WindowsState) {
         var bounds = screen.getPrimaryDisplay().bounds;
         return Object.assign({}, defaultSize, {
             x: (bounds.width - defaultSize.width) / 2,
@@ -54,7 +61,7 @@ export default function (name, options) {
         });
     };
 
-    var ensureVisibleOnSomeDisplay = function (windowState) {
+    var ensureVisibleOnSomeDisplay = function (windowState :WindowsState) {
         var visible = screen.getAllDisplays().some(function (display) {
             return windowWithinBounds(windowState, display.bounds);
         });

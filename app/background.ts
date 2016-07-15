@@ -6,7 +6,7 @@
 // window from here.
 
 import { app, Menu } from 'electron';
-/*import { devMenuTemplate } from './helpers/dev_menu_template';
+import { devMenuTemplate } from './helpers/dev_menu_template';
 import { editMenuTemplate } from './helpers/edit_menu_template';
 import createWindow from './helpers/window';
 
@@ -14,10 +14,13 @@ import createWindow from './helpers/window';
 // in config/env_xxx.json file.
 import env from './env';
 
-var mainWindow;
+var mainWindow :Electron.BrowserWindow;
+
+var menu :Electron.Menu;
 
 var setApplicationMenu = function () {
-    var menus = [editMenuTemplate];
+    var menus :Electron.MenuItemOptions[];
+    menus = [editMenuTemplate];
     if (env.name !== 'production') {
         menus.push(devMenuTemplate);
     }
@@ -35,10 +38,10 @@ app.on('ready', function () {
     mainWindow.loadURL('file://' + __dirname + '/app.html');
 
     //if (env.name !== 'production') {
-        mainWindow.openDevTools();
+        mainWindow.webContents.openDevTools();
     //}
 });
 
 app.on('window-all-closed', function () {
     app.quit();
-});*/
+});

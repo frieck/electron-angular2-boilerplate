@@ -2,19 +2,12 @@
     "compilerOptions": {
         "target": "ES6",
         "module": "commonjs",
-        "removeComments": true,
+        "removeComments": false,
         "preserveConstEnums": true,
-        "moduleResolution": "classic",
+        "moduleResolution": "node",
         "experimentalDecorators": true,
         "noImplicitAny": true,
         "noEmitOnError": true,
         "jsx": "react"
-    },
-    "exclude": [
-        "node_modules",
-        "typings/globals/github-electron/index",
-        "typings/globals/github-electron/index.d.ts",
-        "typings/index.d.ts",
-        "test"
-    ]
+    }
 }
