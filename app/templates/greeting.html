@@ -1,3 +1,14 @@
-<input [(ngModel)]="greet.name" placeholder="name" />
+<md-content>
+    <md-toolbar class="md-hue-2">
+        <div class="md-toolbar-tools">
+            <h2><span>My First Angular 2 App!</span></h2>
+            <span flex></span>
+        </div>
+    </md-toolbar>
 
-<h1>My First Angular 2 App!<br />{{greet.text}}{{greet.name}}!</h1>
+    <md-card>
+        <input [(ngModel)]="greet.name" placeholder="name" />
+
+        <h1>{{greet.text}}{{greet.name}}!</h1>
+    </md-card>
+</md-content>

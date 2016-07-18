@@ -8,7 +8,9 @@
         'main': '.', // 'dist',
         '@angular': 'node_modules/@angular',
         'angular2-in-memory-web-api': 'node_modules/angular2-in-memory-web-api',
-        'rxjs': 'node_modules/rxjs'
+        'rxjs': 'node_modules/rxjs',
+        '@angular2-material': 'node_modules/@angular2-material',
+        'symbol-observable': 'node_modules/symbol-observable',
     };
     // packages tells the System loader how to load when no filename and/or no extension
     var packages = {
@@ -20,6 +22,10 @@
             defaultExtension: 'js'
         },
         'angular2-in-memory-web-api': {
+            main: 'index.js',
+            defaultExtension: 'js'
+        },
+        'symbol-observable': {
             main: 'index.js',
             defaultExtension: 'js'
         },
@@ -36,6 +42,24 @@
         'router-deprecated',
         'upgrade',
     ];
+
+    var materialPackageNames = [
+        'core',
+        'toolbar',
+        'icon',
+        'button',
+        'sidenav',
+        'list',
+        'card',
+        'input',
+    ];
+
+    function angularmaterialPack(pkgName) {
+        packages[`@angular2-material/${pkgName}`] = {
+            main: `${pkgName}.js`
+        };
+    }
+
     // Individual files (~300 requests):
     function packIndex(pkgName) {
         packages['@angular/' + pkgName] = {
@@ -54,6 +78,8 @@
     var setPackageConfig = System.packageWithIndex ? packIndex : packUmd;
     // Add package entries for angular packages
     ngPackageNames.forEach(setPackageConfig);
+    // Add package entries for angular material packages
+    materialPackageNames.forEach(angularmaterialPack);
     var config = {
         map: map,
         packages: packages
