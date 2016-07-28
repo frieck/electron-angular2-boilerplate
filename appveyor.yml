@@ -23,5 +23,9 @@ test_script:
   # run tests
   # - npm test
 
+artifacts:
+  - path: releases/*.exe
+    name: MyApp
+
 # Don't actually build.
 build: off
