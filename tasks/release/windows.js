@@ -13,7 +13,8 @@ var releasesDir;
 var readyAppDir;
 var manifest;
 
-var init = function () {
+var init = function() {
+    console.log("init()");
     projectDir = jetpack;
     tmpDir = projectDir.dir('./tmp', { empty: true });
     releasesDir = projectDir.dir('./releases');
@@ -23,27 +24,31 @@ var init = function () {
     return new Q();
 };
 
-var copyRuntime = function () {
+var copyRuntime = function() {
+    console.log("copyRuntime()");
     return projectDir.copyAsync('node_modules/electron-prebuilt/dist', readyAppDir.path(), { overwrite: true });
 };
 
-var cleanupRuntime = function () {
+var cleanupRuntime = function() {
+    console.log("cleanupRuntime()");
     return readyAppDir.removeAsync('resources/default_app');
 };
 
-var packageBuiltApp = function () {
+var packageBuiltApp = function() {
+    console.log("packageBuiltApp()");
     var deferred = Q.defer();
 
     asar.createPackageWithOptions(projectDir.path('build'), readyAppDir.path('resources/app.asar'), {
         dot: true
-    }, function () {
+    }, function() {
         deferred.resolve();
     });
 
     return deferred.promise;
 };
 
-var finalize = function () {
+var finalize = function() {
+    console.log("finalize()");
     var deferred = Q.defer();
 
     projectDir.copy('resources/windows/icon.ico', readyAppDir.path('icon.ico'));
@@ -60,7 +65,7 @@ var finalize = function () {
             'LegalCopyright': manifest.copyright,
             'OriginalFilename': manifest.productName + '.exe'
         }
-    }, function (err) {
+    }, function(err) {
         if (!err) {
             deferred.resolve();
         }
@@ -69,11 +74,13 @@ var finalize = function () {
     return deferred.promise;
 };
 
-var renameApp = function () {
+var renameApp = function() {
+    console.log("renameApp()");
     return readyAppDir.renameAsync('electron.exe', manifest.productName + '.exe');
 };
 
-var createInstaller = function () {
+var createInstaller = function() {
+    console.log("createInstaller()");
     var deferred = Q.defer();
 
     var finalPackageName = utils.getReleasePackageName(manifest) + '.exe';
@@ -103,15 +110,15 @@ var createInstaller = function () {
     ], {
         stdio: 'inherit'
     });
-    nsis.on('error', function (err) {
+    nsis.on('error', function(err) {
         if (err.message === 'spawn makensis ENOENT') {
-            throw "Can't find NSIS. Are you sure you've installed it and"
-                + " added to PATH environment variable?";
+            throw "Can't find NSIS. Are you sure you've installed it and" +
+                " added to PATH environment variable?";
         } else {
             throw err;
         }
     });
-    nsis.on('close', function () {
+    nsis.on('close', function() {
         gulpUtil.log('Installer ready!', releasesDir.path(finalPackageName));
         deferred.resolve();
     });
@@ -119,11 +126,12 @@ var createInstaller = function () {
     return deferred.promise;
 };
 
-var cleanClutter = function () {
+var cleanClutter = function() {
+    console.log("cleanClutter()");
     return tmpDir.removeAsync('.');
 };
 
-module.exports = function () {
+module.exports = function() {
     return init()
         .then(copyRuntime)
         .then(cleanupRuntime)

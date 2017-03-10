@@ -4,32 +4,20 @@ var pathUtil = require('path');
 var Q = require('q');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
-var less = require('gulp-less');
+var npmCmd = require('npm-spawn');
 var watch = require('gulp-watch');
 var batch = require('gulp-batch');
 var plumber = require('gulp-plumber');
-var ts = require('gulp-typescript');
 var livereload = require('gulp-livereload');
 var jetpack = require('fs-jetpack');
-
+var webpack = require('webpack');
 var bundle = require('./bundle');
 var generateSpecImportsFile = require('./generate_spec_imports');
 var utils = require('../utils');
-
 var projectDir = jetpack;
 var srcDir = projectDir.cwd('./app');
+var buildDir = projectDir.cwd('./app/build');
 var destDir = projectDir.cwd('./build');
-
-var paths = {
-    copyFromAppDir: [
-        './node_modules/**',
-        './helpers/**',
-        './templates/**',
-        './**/*.html',
-        './**/*.+(jpg|png|svg)',
-        '!./**/*.ts',
-    ],
-};
 
 var errorHandler = function(title) {
     return function(err) {
@@ -42,29 +30,37 @@ var errorHandler = function(title) {
 // Tasks
 // -------------------------------------
 
+var webpackElectronRendererTask = function() {
+    return npmCmd(['run', 'build:electron.renderer'], { cwd: 'app' });
+}
+gulp.task('webpackElectronRenderer', ['bundle'], webpackElectronRendererTask);
+
+var webpackElectronMainTask = function() {
+    return npmCmd(['run', 'build:electron.main'], { cwd: 'app' });
+}
+gulp.task('webpackElectronMain', ['bundle', 'webpackElectronRenderer'], webpackElectronMainTask);
+
+var webpackBundleTask = function() {
+    projectDir.copy(buildDir.path('.'), destDir.path('.'), { overwrite: true });
+};
+gulp.task('webpackBundle', ['bundle', 'webpackClean', 'webpackElectronRenderer', 'webpackElectronMain'], webpackBundleTask);
+
+gulp.task('webpackClean', function() {
+    return buildDir.dirAsync('.', {
+        empty: true
+    });
+});
+
 gulp.task('clean', function() {
     return destDir.dirAsync('.', {
         empty: true
     });
 });
 
-
-var copyTask = function() {
-    projectDir.copy('app/systemjs.config.js', destDir.path('systemjs.config.js'));
-    return projectDir.copyAsync('app', destDir.path(), {
-        overwrite: true,
-        matching: paths.copyFromAppDir
-    });
-};
-gulp.task('copy', ['clean'], copyTask);
-gulp.task('copy-watch', copyTask);
-
-
 var bundleApplication = function() {
-    return Q.all([
-        bundle(destDir.path('background.js'), destDir.path('background.js')),
-        bundle(destDir.path('app.js'), destDir.path('app.js')),
-    ]);
+    /*return Q.all([
+        bundle(destDir.path('background.js'), destDir.path('background.js'))
+    ]);*/
 };
 
 var bundleSpecs = function() {
@@ -73,45 +69,22 @@ var bundleSpecs = function() {
     });
 };
 
-var typescriptTask = function() {
-    var tsProject = ts.createProject(projectDir.path("tsconfig.json"));
-
-    return gulp.src(['app/**/*.ts', 'app/*.ts', "!app/node_modules", "!app/node_modules/**"])
-        .pipe(ts(tsProject))
-        .on('error', errorHandler('TypeScript'))
-        .pipe(gulp.dest(function() {
-            return destDir.path();
-        }));
-};
-gulp.task('typescript', ['clean'], typescriptTask);
-
 var bundleTask = function() {
-    if (utils.getEnvName() === 'test') {
+    /*if (utils.getEnvName() === 'test') {
         return bundleSpecs();
     }
-    return bundleApplication();
+    return bundleApplication();*/
 };
-gulp.task('bundle', ['clean', "typescript"], bundleTask);
+gulp.task('bundle', ['clean'], bundleTask);
 gulp.task('bundle-watch', bundleTask);
 
-
-var lessTask = function() {
-    return gulp.src('app/stylesheets/main.less')
-        .pipe(plumber())
-        .pipe(less())
-        .pipe(gulp.dest(destDir.path('stylesheets')));
-};
-gulp.task('less', ['clean'], lessTask);
-gulp.task('less-watch', lessTask);
-
-
-gulp.task('environment', ['clean'], function() {
+gulp.task('environment', ['clean', 'webpackBundle'], function() {
     var configFile = 'config/env_' + utils.getEnvName() + '.json';
     projectDir.copy(configFile, destDir.path('env.json'));
 });
 
 
-gulp.task('package-json', ['clean'], function() {
+gulp.task('package-json', ['clean', 'webpackBundle'], function() {
     var manifest = srcDir.read('package.json', 'json');
 
     // Add "dev" suffix to name, so Electron will write all data like cookies
@@ -129,15 +102,6 @@ gulp.task('watch', function() {
     watch('app/**/*.js', batch(function(events, done) {
         gulp.start('bundle-watch', done);
     }));
-    watch(paths.copyFromAppDir, {
-        cwd: 'app'
-    }, batch(function(events, done) {
-        gulp.start('copy-watch', done);
-    }));
-    watch('app/**/*.less', batch(function(events, done) {
-        gulp.start('less-watch', done);
-    }));
 });
 
-
-gulp.task('build', ['bundle', 'less', 'typescript', 'copy', 'environment', 'package-json']);
+gulp.task('build', ['bundle', 'webpackBundle', 'environment', 'package-json']);
