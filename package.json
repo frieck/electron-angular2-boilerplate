@@ -1,5 +1,8 @@
 {
     "devDependencies": {
+        "@types/electron": "1.4.32",
+        "@types/node": "6.0.63",
+        "@types/webpack": "2.2.5",
         "asar": "0.13.0",
         "chai": "^3.5.0",
         "electron": "1.6.2",
@@ -18,8 +21,11 @@
         "npm-spawn": "^0.1.0",
         "q": "^1.4.1",
         "rollup": "0.41.4",
-        "typescript": "^2.2.1",
-        "webpack": "2.2.1",
+        "typescript": "2.0.10",
+        "webpack": "2.2.0",
+        "webpack-merge": "2.6.1",
+        "copy-webpack-plugin": "4.0.1",
+        "awesome-typescript-loader": "3.0.4",
         "yargs": "7.0.1"
     },
     "optionalDependencies": {
@@ -30,6 +36,9 @@
         "page-cache": false,
         "plugin": false,
         "java": false
+    },
+    "engines": {
+        "node": ">= 5.4.1 < 7"
     },
     "proxy_bypass_list": "",
     "inject_js_end": "",
@@ -44,7 +53,9 @@
         "test": "electron-mocha build --renderer",
         "build": "gulp build",
         "install-native": "node ./tasks/install_native_module",
-        "postinstall": "cd app && npm install"
+        "postinstall": "cd app && npm install",
+        "webpack": "webpack --progress --profile --bail",
+        "build:electron.main": "npm run webpack -- --config config/electron/webpack.electron.prod.js"
     },
     "ignore_certificate_errors": false,
     "chromium_args": "",
@@ -68,7 +79,7 @@
         "force_download": true,
         "windows-x64": true
     },
-    "main": "build/main.js",
+    "main": "main.js",
     "web_preferences": {},
     "description": "",
     "web": {
@@ -132,5 +143,6 @@
     "remote_debugging_port": "",
     "inject_js_start": "",
     "log_net_log": "",
-    "proxy_server": ""
+    "proxy_server": "",
+    "name": "electron"
 }

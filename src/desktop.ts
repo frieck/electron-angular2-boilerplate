@@ -1,5 +1,3 @@
-/// <reference path="../typings/index.d.ts" />
-
 // This is main process of Electron, started as first thing when your
 // app starts. This script is running through entire life of your application.
 // It doesn't have any windows which you can see on screen, but we can open
@@ -35,7 +33,7 @@ app.on('ready', function () {
         height: 600
     });
 
-    mainWindow.loadURL('file://' + __dirname + '/app.html');
+    mainWindow.loadURL('file://' + __dirname + '/index.html');
 
     //if (env.name !== 'production') {
         mainWindow.webContents.openDevTools();

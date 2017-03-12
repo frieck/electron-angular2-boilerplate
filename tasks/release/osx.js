@@ -13,7 +13,7 @@ var tmpDir;
 var finalAppDir;
 var manifest;
 
-var init = function () {
+var init = function() {
     projectDir = jetpack;
     tmpDir = projectDir.dir('./tmp', { empty: true });
     releasesDir = projectDir.dir('./releases');
@@ -23,29 +23,29 @@ var init = function () {
     return new Q();
 };
 
-var copyRuntime = function () {
+var copyRuntime = function() {
     return projectDir.copyAsync('node_modules/electron-prebuilt/dist/Electron.app', finalAppDir.path());
 };
 
-var cleanupRuntime = function () {
+var cleanupRuntime = function() {
     finalAppDir.remove('Contents/Resources/default_app');
     finalAppDir.remove('Contents/Resources/atom.icns');
     return new Q();
 };
 
-var packageBuiltApp = function () {
+var packageBuiltApp = function() {
     var deferred = Q.defer();
 
     asar.createPackageWithOptions(projectDir.path('build'), finalAppDir.path('Contents/Resources/app.asar'), {
         dot: true
-    }, function () {
+    }, function() {
         deferred.resolve();
     });
 
     return deferred.promise;
 };
 
-var finalize = function () {
+var finalize = function() {
     // Prepare main Info.plist
     var info = projectDir.read('resources/osx/Info.plist');
     info = utils.replace(info, {
@@ -59,7 +59,7 @@ var finalize = function () {
     finalAppDir.write('Contents/Info.plist', info);
 
     // Prepare Info.plist of Helper apps
-    [' EH', ' NP', ''].forEach(function (helper_suffix) {
+    [' EH', ' NP', ''].forEach(function(helper_suffix) {
         info = projectDir.read('resources/osx/helper_apps/Info' + helper_suffix + '.plist');
         info = utils.replace(info, {
             productName: manifest.productName,
@@ -74,10 +74,10 @@ var finalize = function () {
     return new Q();
 };
 
-var renameApp = function () {
+var renameApp = function() {
     // Rename helpers
-    [' Helper EH', ' Helper NP', ' Helper'].forEach(function (helper_suffix) {
-        finalAppDir.rename('Contents/Frameworks/Electron' + helper_suffix + '.app/Contents/MacOS/Electron' + helper_suffix, manifest.productName + helper_suffix );
+    [' Helper EH', ' Helper NP', ' Helper'].forEach(function(helper_suffix) {
+        finalAppDir.rename('Contents/Frameworks/Electron' + helper_suffix + '.app/Contents/MacOS/Electron' + helper_suffix, manifest.productName + helper_suffix);
         finalAppDir.rename('Contents/Frameworks/Electron' + helper_suffix + '.app', manifest.productName + helper_suffix + '.app');
     });
     // Rename application
@@ -85,7 +85,7 @@ var renameApp = function () {
     return new Q();
 };
 
-var signApp = function () {
+var signApp = function() {
     var identity = utils.getSigningId(manifest);
     var MASIdentity = utils.getMASSigningId(manifest);
     var MASInstallerIdentity = utils.getMASInstallerSigningId(manifest);
@@ -116,7 +116,7 @@ var signApp = function () {
         cmds.push('productbuild --component "' + finalAppDir.path() + '" /Applications --sign "' + MASInstallerIdentity + '" "' + releasesDir.path(manifest.productName + '.pkg') + '"');
 
         var result = new Q();
-        cmds.forEach(function (cmd) {
+        cmds.forEach(function(cmd) {
             result = result.then(function(result) {
                 gulpUtil.log('Signing with:', cmd);
                 return Q.nfcall(child_process.exec, cmd);
@@ -136,7 +136,7 @@ var signApp = function () {
     }
 };
 
-var packToDmgFile = function () {
+var packToDmgFile = function() {
     if (utils.releaseForMAS()) {
         return new Q();
     }
@@ -163,25 +163,25 @@ var packToDmgFile = function () {
 
     var readyDmgPath = releasesDir.path(dmgName);
     appdmg({
-        source: tmpDir.path('appdmg.json'),
-        target: readyDmgPath
-    })
-    .on('error', function (err) {
-        console.error(err);
-    })
-    .on('finish', function () {
-        gulpUtil.log('DMG file ready!', readyDmgPath);
-        deferred.resolve();
-    });
+            source: tmpDir.path('appdmg.json'),
+            target: readyDmgPath
+        })
+        .on('error', function(err) {
+            console.error(err);
+        })
+        .on('finish', function() {
+            gulpUtil.log('DMG file ready!', readyDmgPath);
+            deferred.resolve();
+        });
 
     return deferred.promise;
 };
 
-var cleanClutter = function () {
+var cleanClutter = function() {
     return tmpDir.removeAsync('.');
 };
 
-module.exports = function () {
+module.exports = function() {
     return init()
         .then(copyRuntime)
         .then(cleanupRuntime)
