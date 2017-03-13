@@ -36,7 +36,7 @@ var webpackElectronRendererTask = function() {
 gulp.task('webpackElectronRenderer', ['bundle'], webpackElectronRendererTask);
 
 var webpackElectronMainTask = function() {
-    return npmCmd(['run', 'build:electron.main'], { cwd: 'app' });
+    return npmCmd(['run', 'build:electron.main'], { cwd: '.' });
 }
 gulp.task('webpackElectronMain', ['bundle', 'webpackElectronRenderer'], webpackElectronMainTask);
 
@@ -92,6 +92,7 @@ gulp.task('package-json', ['clean', 'webpackBundle'], function() {
     if (utils.getEnvName() === 'development') {
         manifest.name += '-dev';
         manifest.productName += ' Dev';
+        manifest.main = 'main.js';
     }
 
     destDir.write('package.json', manifest);

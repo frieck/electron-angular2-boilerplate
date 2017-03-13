@@ -181,8 +181,8 @@
         "node": ">= 5.4.1 < 7"
     },
 
-    "packageNameTemplate": "{{name}}-v{{version}}-{{platform}}-{{arch}}",
-    "productName": "Electron Angular2 Boilerplate",
+    "packageNameTemplate": "{{name}}-v{{version}}-{{arch}}",
+    "productName": "Electron Angular2 BP",
     "osx": {
         "build": "1",
         "identifier": "com.farsystems.electron-angular2-boilerplate",
