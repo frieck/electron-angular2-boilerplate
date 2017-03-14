@@ -1,12 +1,12 @@
 electron-angular2-boilerplate
 ==============
-Comprehensive boilerplate application for [Electron runtime](http://electron.atom.io) with support to Angular2 and TypeScript compilation.  
+Comprehensive boilerplate application for [Electron runtime](http://electron.atom.io) with support to [Angular2](https://angular.io) and [TypeScript](https://www.typescriptlang.org) compilation using [webpack](https://webpack.github.io).  
 
 # License
 
 The MIT License (MIT)
 
-Copyright (c) 2015-2016 Jakub Szwacz
+Copyright (c) 2016-2017 Felipe Augusto Rieck
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
