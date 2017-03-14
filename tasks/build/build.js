@@ -35,15 +35,30 @@ var webpackElectronRendererTask = function() {
 }
 gulp.task('webpackElectronRenderer', ['bundle'], webpackElectronRendererTask);
 
+var webpackElectronRendererDevTask = function() {
+    return npmCmd(['run', 'watch:electron.renderer'], { cwd: 'app' });
+}
+gulp.task('webpackElectronRenderer:watch', ['bundle-watch'], webpackElectronRendererDevTask);
+
 var webpackElectronMainTask = function() {
     return npmCmd(['run', 'build:electron.main'], { cwd: '.' });
 }
 gulp.task('webpackElectronMain', ['bundle', 'webpackElectronRenderer'], webpackElectronMainTask);
+gulp.task('webpackElectronMain:watch', ['bundle-watch'], webpackElectronMainTask);
 
 var webpackBundleTask = function() {
     projectDir.copy(buildDir.path('.'), destDir.path('.'), { overwrite: true });
 };
 gulp.task('webpackBundle', ['bundle', 'webpackClean', 'webpackElectronRenderer', 'webpackElectronMain'], webpackBundleTask);
+
+var webpackBundleTaskWatch = function() {
+    gulp.start('webpackElectronRenderer:watch');
+    watch('app/build', batch(function(events, done) {
+        projectDir.copy(buildDir.path('.'), destDir.path('.'), { overwrite: true });
+        done();
+    }));
+};
+gulp.task('webpackBundle:watch', ['bundle-watch', 'webpackClean', 'webpackElectronMain:watch'], webpackBundleTaskWatch);
 
 gulp.task('webpackClean', function() {
     return buildDir.dirAsync('.', {
@@ -83,8 +98,28 @@ gulp.task('environment', ['clean', 'webpackBundle'], function() {
     projectDir.copy(configFile, destDir.path('env.json'));
 });
 
+gulp.task('environment:watch', ['webpackBundle:watch'], function() {
+    var configFile = 'config/env_' + utils.getEnvName() + '.json';
+    projectDir.copy(configFile, destDir.path('env.json'));
+});
+
 
 gulp.task('package-json', ['clean', 'webpackBundle'], function() {
+    var manifest = srcDir.read('package.json', 'json');
+
+    // Add "dev" suffix to name, so Electron will write all data like cookies
+    // and localStorage in separate places for production and development.
+    if (utils.getEnvName() === 'development') {
+        manifest.name += '-dev';
+        manifest.productName += ' Dev';
+        manifest.main = 'main.js';
+    }
+
+    destDir.write('package.json', manifest);
+});
+
+
+gulp.task('package-json:watch', ['webpackBundle:watch'], function() {
     var manifest = srcDir.read('package.json', 'json');
 
     // Add "dev" suffix to name, so Electron will write all data like cookies
@@ -106,3 +141,5 @@ gulp.task('watch', function() {
 });
 
 gulp.task('build', ['bundle', 'webpackBundle', 'environment', 'package-json']);
+
+gulp.task('build:watch', ['bundle-watch', 'webpackBundle:watch', 'environment:watch', 'package-json:watch']);

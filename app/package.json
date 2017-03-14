@@ -163,6 +163,7 @@
         "build:electron.full": "npm run build:electron.renderer && npm run build:electron.main",
         "postbuild:electron.full": "npm run electron:start",
         "build:electron.renderer": "npm run webpack -- --config config/electron/webpack.renderer.prod.js",
+        "watch:electron.renderer": "npm run build:electron.renderer -- --watch",
         "build:electron.main": "npm run webpack -- --config config/electron/webpack.electron.prod.js",
         "electron:start": "electron build",
         "build:aot:prod": "npm run clean:dist && npm run clean:aot && webpack --config config/webpack.prod.js  --progress --profile --bail",

@@ -18,7 +18,6 @@ var mainWindow :Electron.BrowserWindow;
 var menu :Electron.Menu;
 
 var setApplicationMenu = function (mw :Electron.BrowserWindow) {
-    console.log('hey....');
     var menus :Electron.MenuItemOptions[];
     menus = [editMenuTemplate, menuTeste(mw)];
     if (env.name !== 'production') {

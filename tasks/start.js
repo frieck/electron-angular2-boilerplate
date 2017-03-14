@@ -5,7 +5,8 @@ var npmCmd = require('npm-spawn');
 var electron = require('electron-prebuilt');
 var gulp = require('gulp');
 
-gulp.task('start', ['build', 'watch'], function() {
+gulp.task('start', ['pre:startProcess'], function() {
+    gulp.start('build:watch');
     return startProcess();
 });
 
