@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Routes } from '@angular/router';
+import { Routes, Router } from '@angular/router';
+import { ipcRenderer } from 'electron';
 
 import { BaMenuService } from '../theme';
 import { PAGES_MENU } from './pages.menu';
@@ -32,10 +33,15 @@ import { PAGES_MENU } from './pages.menu';
 })
 export class Pages {
 
-  constructor(private _menuService: BaMenuService,) {
+  constructor(private _menuService: BaMenuService, private router: Router) {
   }
 
   ngOnInit() {
     this._menuService.updateMenuByRoutes(<Routes>PAGES_MENU);
+
+    ipcRenderer.on('LoadPage', (event, page, args) => {
+      console.log('LoadPage', event, page, args);
+      this.router.navigate([page]);
+    });
   }
 }

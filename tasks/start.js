@@ -1,6 +1,7 @@
 'use strict';
 
 var childProcess = require('child_process');
+var npmCmd = require('npm-spawn');
 var electron = require('electron-prebuilt');
 var gulp = require('gulp');
 
@@ -9,11 +10,16 @@ gulp.task('start', ['build', 'watch'], function() {
 });
 
 
-gulp.task('startProcess', function() {
+gulp.task('startProcess', ['pre:startProcess'], function() {
     return startProcess();
 });
 
+gulp.task('pre:startProcess', function() {
+    return npmCmd(['run', 'build:electron.main'], { cwd: '.' });
+});
+
 function startProcess() {
+
     return childProcess.spawn(electron, ['./build'], {
             stdio: 'inherit'
         })

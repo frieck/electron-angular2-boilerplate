@@ -6,6 +6,7 @@
 import { app, Menu } from 'electron';
 import { devMenuTemplate } from './helpers/dev_menu_template';
 import { editMenuTemplate } from './helpers/edit_menu_template';
+import menuTeste from './helpers/teste_menu_template';
 import createWindow from './helpers/window';
 
 // Special module holding environment variables which you declared
@@ -16,9 +17,10 @@ var mainWindow :Electron.BrowserWindow;
 
 var menu :Electron.Menu;
 
-var setApplicationMenu = function () {
+var setApplicationMenu = function (mw :Electron.BrowserWindow) {
+    console.log('hey....');
     var menus :Electron.MenuItemOptions[];
-    menus = [editMenuTemplate];
+    menus = [editMenuTemplate, menuTeste(mw)];
     if (env.name !== 'production') {
         menus.push(devMenuTemplate);
     }
@@ -26,18 +28,20 @@ var setApplicationMenu = function () {
 };
 
 app.on('ready', function () {
-    setApplicationMenu();
+    
 
     var mainWindow = createWindow('main', {
         width: 1000,
         height: 600
     });
 
+    setApplicationMenu(mainWindow);
+
     mainWindow.loadURL('file://' + __dirname + '/index.html');
 
-    //if (env.name !== 'production') {
+    if (env.name !== 'production') {
         mainWindow.webContents.openDevTools();
-    //}
+    }
 });
 
 app.on('window-all-closed', function () {
