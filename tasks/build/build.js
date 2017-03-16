@@ -14,10 +14,14 @@ var webpack = require('webpack');
 var bundle = require('./bundle');
 var generateSpecImportsFile = require('./generate_spec_imports');
 var utils = require('../utils');
+var nems = require('nems');
 var projectDir = jetpack;
 var srcDir = projectDir.cwd('./app');
 var buildDir = projectDir.cwd('./app/build');
 var destDir = projectDir.cwd('./build');
+var mongoAssets = projectDir.cwd('./mongodb-assets');
+
+var mongoDBVersion = '3.4.2';
 
 var errorHandler = function(title) {
     return function(err) {
@@ -73,6 +77,9 @@ gulp.task('clean', function() {
 });
 
 var bundleApplication = function() {
+    mongoAssets.dir('.');
+    return nems.distribute(mongoDBVersion, mongoAssets.path('.'));
+
     /*return Q.all([
         bundle(destDir.path('background.js'), destDir.path('background.js'))
     ]);*/
@@ -87,8 +94,10 @@ var bundleSpecs = function() {
 var bundleTask = function() {
     /*if (utils.getEnvName() === 'test') {
         return bundleSpecs();
-    }
-    return bundleApplication();*/
+    }*/
+    return bundleApplication().then((path) => {
+        projectDir.copy(path, destDir.path('mongodb/' + mongoDBVersion), { matching: ['!*.pdb'] });
+    });
 };
 gulp.task('bundle', ['clean'], bundleTask);
 gulp.task('bundle-watch', bundleTask);

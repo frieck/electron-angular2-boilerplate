@@ -9,8 +9,9 @@ import { editMenuTemplate } from './helpers/edit_menu_template';
 import { Server } from './server';
 import menuTeste from './helpers/teste_menu_template';
 import createWindow from './helpers/window';
-
 import freePort from './helpers/freePort';
+
+var nems = require('./helpers/nems/lib/nems');
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
@@ -31,6 +32,13 @@ var setApplicationMenu = function (mw :Electron.BrowserWindow) {
 
 app.on('ready', function () {
     
+    nems.startMongo('"' + __dirname + '/mongodb/3.4.2/bin"', 27018)
+    .then((pid) => {
+      console.log('MongoDB started (' + pid + ')');
+    }).catch((err) => {
+      console.log('MongoDB failed to start: ' + err);
+    });
+
     freePort((port) => {
         console.log(port);
 
@@ -53,5 +61,11 @@ app.on('ready', function () {
 });
 
 app.on('window-all-closed', function () {
+    nems.stop('"' + __dirname + '/mongodb/3.4.2/bin"', 27018)
+    .then((successMessage) => {
+      console.log('MongoDB stoped: ' + successMessage);
+    }).catch((err) => {
+      console.log('MongoDB failed to stop: ' + err);
+    });
     app.quit();
 });
