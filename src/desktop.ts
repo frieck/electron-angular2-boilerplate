@@ -6,11 +6,9 @@
 import { app, Menu } from 'electron';
 import { devMenuTemplate } from './helpers/dev_menu_template';
 import { editMenuTemplate } from './helpers/edit_menu_template';
-import { Server } from './server';
 import menuTeste from './helpers/teste_menu_template';
 import createWindow from './helpers/window';
-
-import freePort from './helpers/freePort';
+import ipcService from './helpers/ipc/ipcService';
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
@@ -30,26 +28,20 @@ var setApplicationMenu = function (mw :Electron.BrowserWindow) {
 };
 
 app.on('ready', function () {
-    
-    freePort((port) => {
-        console.log(port);
-
-        var server = new Server(port);
-        server.start();
-
-        var mainWindow = createWindow('main', {
-            width: 1000,
-            height: 600
-        });
-
-        setApplicationMenu(mainWindow);
-
-        mainWindow.loadURL('http://localhost:' + port);
-
-        if (env.name !== 'production') {
-            mainWindow.webContents.openDevTools();
-        }
+    var mainWindow = createWindow('main', {
+        width: 1000,
+        height: 600
     });
+
+    ipcService(mainWindow);
+
+    setApplicationMenu(mainWindow);
+
+    mainWindow.loadURL(__dirname + '/index.html');
+
+    if (env.name !== 'production') {
+        mainWindow.webContents.openDevTools();
+    }
 });
 
 app.on('window-all-closed', function () {
