@@ -37,7 +37,8 @@ var packageBuiltApp = function() {
     var deferred = Q.defer();
 
     asar.createPackageWithOptions(projectDir.path('build'), finalAppDir.path('Contents/Resources/app.asar'), {
-        dot: true
+        dot: true,
+        unpackDir: 'mongodb'
     }, function() {
         deferred.resolve();
     });
@@ -190,6 +191,6 @@ module.exports = function() {
         .then(renameApp)
         .then(signApp)
         .then(packToDmgFile)
-        .then(cleanClutter)
+        //.then(cleanClutter)
         .catch(console.error);
 };
