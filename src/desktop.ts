@@ -32,7 +32,7 @@ var setApplicationMenu = function (mw :Electron.BrowserWindow) {
 
 app.on('ready', function () {
     
-    nems.startMongo('"' + __dirname.replace('app.asar', '') + 'app.asar.unpacked/mongodb/3.4.2/bin"', 27018)
+    nems.startMongo(__dirname.replace('app.asar', '') + 'app.asar.unpacked/mongodb/3.4.2/bin', 27018)
     .then((pid) => {
       console.log('MongoDB started (' + pid + ')');
     }).catch((err) => {
@@ -61,7 +61,7 @@ app.on('ready', function () {
 });
 
 app.on('window-all-closed', function () {
-    nems.stop('"' + __dirname.replace('app.asar', '') + 'app.asar.unpacked/mongodb/3.4.2/bin"', 27018)
+    nems.stop(__dirname.replace('app.asar', '') + 'app.asar.unpacked/mongodb/3.4.2/bin', 27018)
     .then((successMessage) => {
       console.log('MongoDB stoped: ' + successMessage);
     }).catch((err) => {
