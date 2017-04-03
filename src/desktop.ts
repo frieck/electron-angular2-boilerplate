@@ -4,10 +4,8 @@
 // window from here.
 
 import { app, Menu } from 'electron';
-import { devMenuTemplate } from './helpers/dev_menu_template';
-import { editMenuTemplate } from './helpers/edit_menu_template';
+import devMenuTemplate from './helpers/menu_template';
 import { Server } from './server';
-import menuTeste from './helpers/teste_menu_template';
 import createWindow from './helpers/window';
 
 import freePort from './helpers/freePort';
@@ -21,12 +19,7 @@ var mainWindow :Electron.BrowserWindow;
 var menu :Electron.Menu;
 
 var setApplicationMenu = function (mw :Electron.BrowserWindow) {
-    var menus :Electron.MenuItemOptions[];
-    menus = [editMenuTemplate, menuTeste(mw)];
-    if (env.name !== 'production') {
-        menus.push(devMenuTemplate);
-    }
-    Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
+    Menu.setApplicationMenu(Menu.buildFromTemplate(devMenuTemplate(mw)));
 };
 
 app.on('ready', function () {

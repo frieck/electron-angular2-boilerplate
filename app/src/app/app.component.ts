@@ -27,7 +27,6 @@ export class App {
 
   constructor(private _state: GlobalState,
               private _imageLoader: BaImageLoaderService,
-              private _spinner: BaThemeSpinner,
               private viewContainerRef: ViewContainerRef,
               private themeConfig: BaThemeConfig) {
 
@@ -43,7 +42,7 @@ export class App {
   public ngAfterViewInit(): void {
     // hide spinner once all loaders are completed
     BaThemePreloader.load().then((values) => {
-      this._spinner.hide();
+     
     });
   }
 

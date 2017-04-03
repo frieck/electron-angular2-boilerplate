@@ -1,0 +1,41 @@
+<!-- About modal -->
+<div bsModal #aboutModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" (click)="aboutModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                <h4 class="modal-title">{{app.name}} - {{app.version}}</h4>
+            </div>
+            <div class="modal-body">
+                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex
+                ea commodo consequat.
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--ba-sidebar></ba-sidebar-->
+<ba-page-top></ba-page-top>
+<div class="al-main">
+    <div class="al-content">
+        <ba-content-top></ba-content-top>
+        <router-outlet></router-outlet>
+    </div>
+</div>
+<footer class="al-footer clearfix">
+    <div class="al-footer-right">Created with <i class="ion-heart"></i></div>
+    <div class="al-footer-main clearfix">
+        <div class="al-copy">&copy; <a href="http://akveo.com">Akveo</a> 2016</div>
+        <ul class="al-share clearfix">
+            <li><i class="socicon socicon-facebook"></i></li>
+            <li><i class="socicon socicon-twitter"></i></li>
+            <li><i class="socicon socicon-google"></i></li>
+            <li><i class="socicon socicon-github"></i></li>
+        </ul>
+    </div>
+</footer>
+<ba-back-top position="200"></ba-back-top>

@@ -1,39 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Routes, Router } from '@angular/router';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
+
+import { ModalDirective } from 'ng2-bootstrap';
 
 import { BaMenuService } from '../theme';
 import { PAGES_MENU } from './pages.menu';
 
 @Component({
   selector: 'pages',
-  template: `
-    <ba-sidebar></ba-sidebar>
-    <ba-page-top></ba-page-top>
-    <div class="al-main">
-      <div class="al-content">
-        <ba-content-top></ba-content-top>
-        <router-outlet></router-outlet>
-      </div>
-    </div>
-    <footer class="al-footer clearfix">
-      <div class="al-footer-right">Created with <i class="ion-heart"></i></div>
-      <div class="al-footer-main clearfix">
-        <div class="al-copy">&copy; <a href="http://akveo.com">Akveo</a> 2016</div>
-        <ul class="al-share clearfix">
-          <li><i class="socicon socicon-facebook"></i></li>
-          <li><i class="socicon socicon-twitter"></i></li>
-          <li><i class="socicon socicon-google"></i></li>
-          <li><i class="socicon socicon-github"></i></li>
-        </ul>
-      </div>
-    </footer>
-    <ba-back-top position="200"></ba-back-top>
-    `
+  templateUrl: './pages.html',
+  styleUrls: ['./pages.scss'],
 })
 export class Pages {
 
+   app: any;
+  @ViewChild('aboutModal') aboutModal: ModalDirective;
+
   constructor(private _menuService: BaMenuService, private router: Router) {
+    this.app = {};
+    this.app.name = remote.app.getName();
+    this.app.version = remote.app.getVersion();
   }
 
   ngOnInit() {
@@ -43,5 +30,17 @@ export class Pages {
       console.log('LoadPage', event, page, args);
       this.router.navigate([page]);
     });
+
+    ipcRenderer.on('showModal', (event, modal) => {
+      switch(modal) {
+        case "about":
+          this.aboutModal.show();
+        break;
+
+      }
+    });
   }
+
+
+
 }
