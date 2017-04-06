@@ -1,9 +1,8 @@
 {
-    "name": "ng2-admin",
-    "version": "0.9.0",
+    "name": "EBA2-Admin",
+    "version": "0.0.1",
     "description": "Angular 2 and Bootstrap 4 Admin Template.",
-    "author": "akveo",
-    "homepage": "http://akveo.github.io/ng2-admin/",
+    "author": "frieck",
     "license": "MIT",
     "dependencies": {
         "@angular/common": "2.4.9",

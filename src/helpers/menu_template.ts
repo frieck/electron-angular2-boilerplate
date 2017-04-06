@@ -66,6 +66,11 @@ export default function(mainWindow) {
             label: 'Help',
             role: 'help',
             submenu: [{
+                    label: `About ${app.getName()}`,
+                    click(item, focusedWindow) {
+                        mainWindow.webContents.send('showModal', 'about');
+                    }
+                }, {
                 label: 'Procurar atualizações',
                 click(item, focusedWindow) {
                     mainWindow.webContents.send('doControllCall', 'checkUpdate');
