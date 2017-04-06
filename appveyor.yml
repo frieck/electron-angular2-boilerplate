@@ -1,11 +1,16 @@
 # Test against this version of Node.js
 environment:
   nodejs_version: "6"
+  NSIS_ROOT: C:\nsis
   my_secret:
     secure: 7aw9GKJaHNvIlfNfyv2byA==
 
+init:
+  - "SET PATH=%NSIS_ROOT%;%PATH%"
+
 # Install scripts. (runs after repo cloning)
 install:
+  - cinst nsis -y -installArgs /D=%NSIS_ROOT%
   - ps: $packageVersion = (Get-Content -Raw -Path app/package.json | ConvertFrom-Json).version
   - ps: $build = $env:APPVEYOR_BUILD_NUMBER
   - ps: Update-AppveyorBuild -Version "$packageVersion-$build"
