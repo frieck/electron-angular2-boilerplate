@@ -31,9 +31,9 @@ test_script:
   # - npm test
 
 artifacts:
-  - path: releases/ng2-admin-*-x86.exe
+  - path: releases/EBA2-Admin-*-x86.exe
     name: Setup-latest-x86
-  - path: releases/ng2-admin-*-x64.exe
+  - path: releases/EBA2-Admin-*-x64.exe
     name: Setup-latest-x64
 
 # Don't actually build.
