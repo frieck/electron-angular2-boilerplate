@@ -1,19 +1,21 @@
 # Test against this version of Node.js
 environment:
   nodejs_version: "6"
-  NSIS_ROOT: C:\nsis
-
-init:
-  - "SET PATH=%NSIS_ROOT%;%PATH%"
+  my_secret:
+    secure: 7aw9GKJaHNvIlfNfyv2byA==
 
 # Install scripts. (runs after repo cloning)
 install:
+  - ps: $packageVersion = (Get-Content -Raw -Path app/package.json | ConvertFrom-Json).version
+  - ps: $build = $env:APPVEYOR_BUILD_NUMBER
+  - ps: Update-AppveyorBuild -Version "$packageVersion-$build"
   # Get the latest stable version of Node.js or io.js
-  - cinst nsis -y -installArgs /D=%NSIS_ROOT%
   - ps: Install-Product node $env:nodejs_version x64
+  - npm -g install npm@next
   # install modules
   - npm install
   - npm run release
+  - ps: Set-AppveyorBuildVariable -Name "deploy_version" -Value (Get-Content -Raw -Path app/package.json | ConvertFrom-Json).version
 
 # Post-install test scripts.
 test_script:
@@ -24,8 +26,24 @@ test_script:
   # - npm test
 
 artifacts:
-  - path: releases/*.exe
-    name: MyApp
+  - path: releases/ng2-admin-*-x86.exe
+    name: Setup-latest-x86
+  - path: releases/ng2-admin-*-x64.exe
+    name: Setup-latest-x64
 
 # Don't actually build.
 build: off
+
+deploy:
+- provider: BinTray
+  username: frieck
+  api_key:
+    secure: FJjduc0FvXY9kR7j2IGEL1Mm1MBBEgUiMZXg+3c5cVFuePEkCp/Rt0X0q1+CLyRX
+  subject: frieck
+  repo: setups
+  package: ea2bp
+  publish: true
+  override: true
+  explode: false
+  artifact: Setup-latest-x86,Setup-latest-x64
+  version: $(deploy_version)

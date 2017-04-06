@@ -9,7 +9,7 @@ export class BaThemeConfig {
   }
 
   public config() {
-    this._baConfig.changeTheme({name: 'clean'});
+    this._baConfig.changeTheme({name: 'blur'});
 
      let colorScheme = {
        primary: '#C3C3C3',

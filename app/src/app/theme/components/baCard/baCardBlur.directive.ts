@@ -11,6 +11,7 @@ import {BgMetrics} from './bgMetrics';
 export class BaCardBlur {
 
   @HostBinding('class.card-blur') isEnabled:boolean = false;
+  @HostBinding('class.card-blur-clean1') isEnabled1:boolean = false;
 
   private _bodyBgSize:BgMetrics;
 
@@ -21,6 +22,14 @@ export class BaCardBlur {
       this._recalculateCardStylesOnBgLoad();
 
       this.isEnabled = true;
+    }
+
+    if (this._isEnabled1()) {
+      this._baCardBlurHelper.init();
+      this._getBodyImageSizesOnBgLoad();
+      this._recalculateCardStylesOnBgLoad();
+
+      this.isEnabled1 = true;
     }
   }
 
@@ -54,5 +63,9 @@ export class BaCardBlur {
 
   private _isEnabled() {
     return this._baConfig.get().theme.name == 'blur';
+  }
+
+   private _isEnabled1() {
+    return this._baConfig.get().theme.name == 'blur-clean1';
   }
 }
